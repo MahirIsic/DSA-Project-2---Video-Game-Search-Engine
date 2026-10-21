@@ -7,13 +7,13 @@ using namespace std;
 int main() {
     /*
     Heap* h = new Heap();
-    h->insert("Game D",10);
-    h->insert("Game A",15);
-    h->insert("Game B",20);
+    h->insert("Game D");
+    h->insert("Game A");
+    h->insert("Game B");
 
 
     cout<<h->extractMax()->name<<endl;
-    h->insert("Game C",5);
+    h->insert("Game C");
     cout<<h->extractMax()->name<<endl;
     cout<<h->extractMax()->name<<endl;
     cout<<h->extractMax()->name<<endl;

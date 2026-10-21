@@ -7,13 +7,12 @@ using namespace std;
 class Node{
 public:
     string name;
-    int users;
 
     //Creates a node with no info about the game
     Node();
 
     //Creates a node with already filled info about the game
-    Node(string n, int u);
+    Node(string n);
 };
 
 //This is a greater heap ordered by number of users
@@ -29,7 +28,7 @@ public:
     //Creates heap
     Heap();
     //Inserts game into a heap
-    void insert(string name, int users);
+    void insert(string name);
     //Extracts the first value in the heap
     Node* extractMax();
 };

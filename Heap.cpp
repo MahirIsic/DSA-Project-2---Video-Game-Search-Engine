@@ -6,12 +6,10 @@ using namespace std;
 
 Node::Node(){
     name = "";
-    users = 0;
 }
 
-Node::Node(string n, int u) {
+Node::Node(string n) {
     name = n;
-    users = u;
 }
 
 void Heap::heapifyUp(vector<Node*>& input_heap) {
@@ -20,7 +18,7 @@ void Heap::heapifyUp(vector<Node*>& input_heap) {
     while (child > 0) {
         //index of parent is set to (child-1)/2
         int parent = (child-1)/2;
-        //If the parent's # of users is less than the child's, you gotta switch the nodes of these two
+        //If the parent should go after the child, you gotta switch the nodes of these two
         if (input_heap[parent]->name > input_heap[child]->name) {
             Node* temp = input_heap[child];
             input_heap[child] = input_heap[parent];
@@ -65,9 +63,9 @@ Heap::Heap() {
     heap = {};
 }
 
-void Heap::insert(string name, int users) {
+void Heap::insert(string name) {
     //Add the input node into the last
-    Node* input = new Node(name, users);
+    Node* input = new Node(name);
     heap.push_back(input);
     size++;
     //Heapify up
