@@ -17,7 +17,13 @@ public:
     //Creates heap
     Heap();
     //Inserts game into a heap
-    void insert(string name);
+    void insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,vector<string> supported_languages);
     //Extracts the first value in the heap
     GameNode* extractMax();
+    //Searches for every value following a certain name
+    vector<GameNode*> searchByName(string name);
+    vector<GameNode*> searchByID(int id);
+    vector<GameNode*> searchByWindowsSupport(bool windows_support);
+    vector<GameNode*> searchByMacSupport(bool mac_support);
+    vector<GameNode*> searchByLinuxSupport(bool linux_support);
 };
