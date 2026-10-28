@@ -3,6 +3,7 @@
 #include <vector>
 #include "GameNode.h"
 using namespace std;
+//Got help from Dogan at office hours
 
 //This is a greater heap ordered by number of users
 class Heap {
@@ -20,10 +21,11 @@ public:
     void insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,vector<string> supported_languages);
     //Extracts the first value in the heap
     GameNode* extractMax();
-    //Searches for every value following a certain name
+    //Searches for every value following certain criteria
     vector<GameNode*> searchByName(string name);
     vector<GameNode*> searchByID(int id);
     vector<GameNode*> searchByWindowsSupport(bool windows_support);
     vector<GameNode*> searchByMacSupport(bool mac_support);
     vector<GameNode*> searchByLinuxSupport(bool linux_support);
+    vector<GameNode*> searchByPrice(float min_price, float max_price);
 };

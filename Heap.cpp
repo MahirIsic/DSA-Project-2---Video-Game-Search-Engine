@@ -157,3 +157,19 @@ vector<GameNode*> Heap::searchByMacSupport(bool mac_support) {
     }
     return result;
 }
+
+vector<GameNode*> Heap::searchByPrice(float min_price, float max_price) {
+    Heap unordered_result;
+    //Iterates through the heap and inserts every value that has the input Mac support into a new heap
+    for (auto i:heap) {
+        if (i->getPrice() >= min_price && i->getPrice() <= max_price) {
+            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
+        }
+    }
+    //Sorts the result
+    vector<GameNode*> result;
+    for (int i=0;i<unordered_result.size;i++) {
+        result.push_back(unordered_result.extractMax());
+    }
+    return result;
+}
