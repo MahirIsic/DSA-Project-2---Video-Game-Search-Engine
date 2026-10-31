@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 using std::vector;
 using std::string;
+using std::unordered_set;
 
 class GameNode
 {
@@ -13,17 +15,17 @@ class GameNode
     bool windows_support;
     bool mac_support;
     bool linux_support;
-    vector<string> supported_languages;
+    unordered_set<string> supported_languages;
 
 public:
     GameNode();
-    GameNode(int input_id,string input_name,float input_price,bool input_windows_support,bool input_mac_support,bool input_linux_support,vector<string> input_supported_languages);
+    GameNode(int input_id,string input_name,float input_price,bool input_windows_support,bool input_mac_support,bool input_linux_support,unordered_set<string> input_supported_languages);
     int getGameID();
     float getPrice();
     bool getWindowsSupport();
     bool getMacSupport();
     bool getLinuxSupport();
-    vector<string> getSupportedLanguages();
+    unordered_set<string> getSupportedLanguages();
     string getGameName();
     bool operator <(GameNode other);
     bool operator >(GameNode other);

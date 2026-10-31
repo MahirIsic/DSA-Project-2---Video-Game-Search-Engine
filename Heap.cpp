@@ -58,7 +58,7 @@ Heap::Heap() {
     heap = {};
 }
 
-void Heap::insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,vector<string> supported_languages) {
+void Heap::insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,unordered_set<string> supported_languages) {
     //Add the input node into the last
     GameNode* input = new GameNode(id,name,price,windows_support,mac_support,linux_support,supported_languages);
     heap.push_back(input);
@@ -163,6 +163,22 @@ vector<GameNode*> Heap::searchByPrice(float min_price, float max_price) {
     //Iterates through the heap and inserts every value that has the input Mac support into a new heap
     for (auto i:heap) {
         if (i->getPrice() >= min_price && i->getPrice() <= max_price) {
+            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
+        }
+    }
+    //Sorts the result
+    vector<GameNode*> result;
+    for (int i=0;i<unordered_result.size;i++) {
+        result.push_back(unordered_result.extractMax());
+    }
+    return result;
+}
+
+vector<GameNode*> Heap::searchByLanguageSupport(string language) {
+    Heap unordered_result;
+    //Iterates through the heap and inserts every value that contains the input supported language into a new heap
+    for (auto i:heap) {
+        if (i->getSupportedLanguages().count(language) != 0) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }

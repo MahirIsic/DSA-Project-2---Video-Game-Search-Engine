@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include "GameNode.h"
 using namespace std;
 //Got help from Dogan at office hours
@@ -18,7 +19,7 @@ public:
     //Creates heap
     Heap();
     //Inserts game into a heap
-    void insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,vector<string> supported_languages);
+    void insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,unordered_set<string> supported_languages);
     //Extracts the first value in the heap
     GameNode* extractMax();
     //Searches for every value following certain criteria
@@ -28,4 +29,5 @@ public:
     vector<GameNode*> searchByMacSupport(bool mac_support);
     vector<GameNode*> searchByLinuxSupport(bool linux_support);
     vector<GameNode*> searchByPrice(float min_price, float max_price);
+    vector<GameNode*> searchByLanguageSupport(string language);
 };

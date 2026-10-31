@@ -1,12 +1,13 @@
 //Mahir will implement this
 #include "GameNode.h"
+#include <set>
 using namespace std;
 
 GameNode::GameNode(){
     game_name = "";
 }
 
-GameNode::GameNode(int input_id,string input_name,float input_price,bool input_windows_support,bool input_mac_support,bool input_linux_support,vector<string> input_supported_languages) {
+GameNode::GameNode(int input_id,string input_name,float input_price,bool input_windows_support,bool input_mac_support,bool input_linux_support,unordered_set<string> input_supported_languages) {
     game_id = input_id;
     game_name = input_name;
     price_in_dollars = input_price;
@@ -40,6 +41,6 @@ bool GameNode::getLinuxSupport() {
     return linux_support;
 }
 
-vector<string> GameNode::getSupportedLanguages() {
+unordered_set<string> GameNode::getSupportedLanguages() {
     return supported_languages;
 }
