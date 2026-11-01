@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
-#include "GameNode.h"
+#include "gameNode.h"
 using namespace std;
 //Got help from Dogan at office hours
 
