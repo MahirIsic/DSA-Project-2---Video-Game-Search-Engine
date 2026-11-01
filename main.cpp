@@ -1,29 +1,31 @@
 #include <iostream>
 #include "heap.h"
-#include "mergeSort.h"
+#include "driver.h"
+
 using namespace std;
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+// Run using &".\out\build\x64-Debug\DSAProject2.exe" In the terminal.
+// 
+// Current State of main.cpp: Loads the CSV file, prints the number of loaded and skipped records, and searches for a game by ID, printing the results.
+// Will later have a menu that allows the user to use our functions.
 
 int main() {
+    // The heap is created within the driver class.
+    Driver driver;
 
-    GameNode game1(1, "Game3", 4.99, true, true, true, {"English"});
-    GameNode game2(5, "Game5", 3.99, true, true, true, {"English"});
-    GameNode game3(3, "Game7", 5.99, true, true, true, {"English"});
-    GameNode game4(0, "Game1", 6.99, true, true, true, {"English"});
-    GameNode game5(123, "Game2", 13.99, true, true, true, {"English"});
-    GameNode game6(6, "Game4", 25.99, true, true, true, {"English"});
-    vector<GameNode> games;
-    games.push_back(game1);
-    games.push_back(game2);
-    games.push_back(game3);
-    games.push_back(game4);
-    games.push_back(game5);
-    games.push_back(game6);
-    mergeSort(games, 0, games.size()-1, compareIDs);
-    for(int i = 0;i < games.size();i++)
-    {
-        cout << games[i].getGameName() << ": " << games[i].getGameID() << "  Price: " << games[i].getPrice() << endl;
+    if (!driver.loadCsv("Data/games.csv")) {
+        cout << "Could not open CSV file." << endl;
+        return 1;
+    }
+
+    cout << "Loaded: " << driver.getLoadedRecords() << endl;
+    cout << "Skipped: " << driver.getSkippedRecords() << endl;
+
+    // ID 1030300 is "1030300 - Hollow Knight: Silksong = $15.99"
+    vector<GameNode*> results = driver.searchById(1030300);
+
+    for (GameNode* game : results) {
+        cout << game->getGameID() << " - " << game->getGameName() << " - $" << game->getPrice() << '\n';
     }
 
     return 0;
