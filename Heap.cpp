@@ -86,8 +86,9 @@ vector<GameNode*> Heap::searchByName(string name) {
         }
     }
     vector<GameNode*> result;
+    int result_size =unordered_result.size;
     //Sorts the result
-    for (int i=0;i<unordered_result.size;i++) {
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -103,7 +104,8 @@ vector<GameNode*> Heap::searchByID(int id) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -119,7 +121,8 @@ vector<GameNode*> Heap::searchByWindowsSupport(bool windows_support) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -135,7 +138,8 @@ vector<GameNode*> Heap::searchByLinuxSupport(bool linux_support) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -151,7 +155,8 @@ vector<GameNode*> Heap::searchByMacSupport(bool mac_support) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -167,7 +172,8 @@ vector<GameNode*> Heap::searchByPrice(float min_price, float max_price) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
@@ -183,7 +189,8 @@ vector<GameNode*> Heap::searchByLanguageSupport(string language) {
     }
     //Sorts the result
     vector<GameNode*> result;
-    for (int i=0;i<unordered_result.size;i++) {
+    int result_size =unordered_result.size;
+    for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMax());
     }
     return result;
