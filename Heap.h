@@ -21,13 +21,15 @@ public:
     //Inserts game into a heap
     void insert(int id,string name,float price,bool windows_support,bool mac_support,bool linux_support,unordered_set<string> supported_languages);
     //Extracts the first value in the heap
-    GameNode* extractMax();
+    GameNode* extractMin();
+    //Sorts a heap
+    vector<GameNode*> sortHeap(Heap unordered_result);
     //Searches for every value following certain criteria
-    vector<GameNode*> searchByName(string name);
-    vector<GameNode*> searchByID(int id);
-    vector<GameNode*> searchByWindowsSupport(bool windows_support);
-    vector<GameNode*> searchByMacSupport(bool mac_support);
-    vector<GameNode*> searchByLinuxSupport(bool linux_support);
-    vector<GameNode*> searchByPrice(float min_price, float max_price);
-    vector<GameNode*> searchByLanguageSupport(string language);
+    Heap searchByName(string name);
+    Heap searchByID(int id);
+    Heap searchByWindowsSupport(bool windows_support);
+    Heap searchByMacSupport(bool mac_support);
+    Heap searchByLinuxSupport(bool linux_support);
+    Heap searchByPrice(float min_price, float max_price);
+    Heap searchByLanguageSupport(string language);
 };

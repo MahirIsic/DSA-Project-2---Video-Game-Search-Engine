@@ -66,7 +66,7 @@ void Heap::insert(int id,string name,float price,bool windows_support,bool mac_s
     heapifyUp(heap);
 }
 
-GameNode* Heap::extractMax() {
+GameNode* Heap::extractMin() {
     //Set the first node as the last and delete the last node
     GameNode* max = heap[0];
     heap[0] = heap[size-1];
@@ -77,7 +77,7 @@ GameNode* Heap::extractMax() {
     return max;
 }
 
-vector<GameNode*> Heap::searchByName(string name) {
+Heap Heap::searchByName(string name) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the name into a new heap
     for (auto i:heap) {
@@ -85,16 +85,10 @@ vector<GameNode*> Heap::searchByName(string name) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    //Sorts the result
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByID(int id) {
+Heap Heap::searchByID(int id) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the id into a new heap
     for (auto i:heap) {
@@ -102,16 +96,10 @@ vector<GameNode*> Heap::searchByID(int id) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByWindowsSupport(bool windows_support) {
+Heap Heap::searchByWindowsSupport(bool windows_support) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the input windows support into a new heap
     for (auto i:heap) {
@@ -119,16 +107,10 @@ vector<GameNode*> Heap::searchByWindowsSupport(bool windows_support) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByLinuxSupport(bool linux_support) {
+Heap Heap::searchByLinuxSupport(bool linux_support) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the input linux support into a new heap
     for (auto i:heap) {
@@ -136,16 +118,10 @@ vector<GameNode*> Heap::searchByLinuxSupport(bool linux_support) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByMacSupport(bool mac_support) {
+Heap Heap::searchByMacSupport(bool mac_support) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the input Mac support into a new heap
     for (auto i:heap) {
@@ -153,16 +129,10 @@ vector<GameNode*> Heap::searchByMacSupport(bool mac_support) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByPrice(float min_price, float max_price) {
+Heap Heap::searchByPrice(float min_price, float max_price) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that has the input Mac support into a new heap
     for (auto i:heap) {
@@ -170,16 +140,10 @@ vector<GameNode*> Heap::searchByPrice(float min_price, float max_price) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
-    vector<GameNode*> result;
-    int result_size =unordered_result.size;
-    for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
-    }
-    return result;
+    return unordered_result;
 }
 
-vector<GameNode*> Heap::searchByLanguageSupport(string language) {
+Heap Heap::searchByLanguageSupport(string language) {
     Heap unordered_result;
     //Iterates through the heap and inserts every value that contains the input supported language into a new heap
     for (auto i:heap) {
@@ -187,11 +151,15 @@ vector<GameNode*> Heap::searchByLanguageSupport(string language) {
             unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
         }
     }
-    //Sorts the result
+    return unordered_result;
+}
+
+vector<GameNode*> Heap::sortHeap(Heap unordered_result) {
     vector<GameNode*> result;
     int result_size =unordered_result.size;
+    //Sorts the result using heap sort
     for (int i=0;i<result_size;i++) {
-        result.push_back(unordered_result.extractMax());
+        result.push_back(unordered_result.extractMin());
     }
     return result;
 }
