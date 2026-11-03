@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "gameNode.h"
-using std::vector;
+using namespace std;
 
 template <typename function>
 void merge(vector<GameNode>& games, int left, int mid, int right, function compare)
@@ -52,6 +53,14 @@ void mergeSort(vector<GameNode>& games, int start, int end, function compare)
         merge(games, start, middle, end, compare);
     }
 }
-bool compareNames(GameNode first, GameNode other);
-bool compareIDs(GameNode first, GameNode other);
-bool comparePrice(GameNode first, GameNode other);
+
+vector<GameNode> searchByName(vector<GameNode>& games, string name);
+GameNode searchByID(vector<GameNode>& games, int id);
+vector<GameNode> searchByWindowsSupport(vector<GameNode>& games);
+vector<GameNode> searchByMacSupport(vector<GameNode>& games);
+vector<GameNode> searchByLinuxSupport(vector<GameNode>& games);
+vector<GameNode> searchByPrice(vector<GameNode>& games, float min_price, float max_price);
+vector<GameNode> searchByLanguageSupport(vector<GameNode>& games, string language);
+bool compareNames(GameNode& first, GameNode& other);
+bool compareIDs(GameNode& first, GameNode& other);
+bool comparePrice(GameNode& first, GameNode& other);

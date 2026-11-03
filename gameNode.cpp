@@ -44,8 +44,3 @@ bool GameNode::getLinuxSupport() {
 unordered_set<string> GameNode::getSupportedLanguages() {
     return supported_languages;
 }
-
-bool GameNode::operator <=(GameNode other)
-{
-    return this->getGameName() <= other.getGameName();
-}

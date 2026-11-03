@@ -29,7 +29,7 @@ public:
     string getGameName();
     // bool operator <(GameNode other);
     // bool operator >(GameNode other);
-    bool operator <=(GameNode other);
+    // bool operator <=(GameNode other);
     // bool operator >=(GameNode other);
 
 };
