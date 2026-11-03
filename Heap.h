@@ -23,7 +23,7 @@ public:
     //Extracts the first value in the heap
     GameNode* extractMin();
     //Sorts a heap
-    vector<GameNode*> sortHeap(Heap unordered_result);
+    vector<GameNode*> sortHeap(Heap& unordered_result);
     //Searches for every value following certain criteria
     Heap searchByName(string name);
     Heap searchByID(int id);

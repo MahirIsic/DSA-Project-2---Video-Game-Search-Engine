@@ -1,31 +1,200 @@
 #include <iostream>
-#include "heap.h"
+#include <iomanip>
+#include <string>
+#include <vector>
 #include "driver.h"
 
 using namespace std;
 
-// Run using &".\out\build\x64-Debug\DSAProject2.exe" In the terminal.
-// 
-// Current State of main.cpp: Loads the CSV file, prints the number of loaded and skipped records, and searches for a game by ID, printing the results.
-// Will later have a menu that allows the user to use our functions.
+namespace {
+void printResults(const vector<GameNode*>& results, bool show_details) {
+    if (results.empty()) {
+        // Handle no matches before attempting to display game records.
+        cout << "No games matched your search.\n";
+        return;
+    }
+
+    cout << "Found " << results.size() << " game(s):\n";
+    if (!show_details) {
+        for (size_t i = 0; i < results.size(); ++i) {
+            if (i > 0) {
+                cout << ", ";
+            }
+            cout << results[i]->getGameName();
+        }
+        cout << '\n';
+        return;
+    }
+
+    for (GameNode* game : results) {
+        cout << "ID: " << game->getGameID()
+             << " | Name: " << game->getGameName()
+             << " | Price: $" << fixed << setprecision(2) << game->getPrice() << defaultfloat
+             << " | Windows: " << (game->getWindowsSupport() ? "Yes" : "No")
+             << " | Mac: " << (game->getMacSupport() ? "Yes" : "No")
+             << " | Linux: " << (game->getLinuxSupport() ? "Yes" : "No")
+             << " | Languages: ";
+
+        bool first_language = true;
+        for (const string& language : game->getSupportedLanguages()) {
+            if (!first_language) {
+                cout << ", ";
+            }
+            cout << language;
+            first_language = false;
+        }
+        cout << '\n';
+    }
+}
+
+void searchMenu(Driver& driver) {
+    while (true) {
+        cout << "\n================================\n"
+         << "Search Games\n"
+         << "1. Exact name\n"
+         << "2. ID\n"
+         << "3. Windows support\n"
+         << "4. Mac support\n"
+         << "5. Linux support\n"
+         << "6. Price range\n"
+         << "7. Supported language\n"
+         << "0. Back to main menu\n"
+         << "================================\n";
+
+        int choice;
+        cout << "Choose a search option: ";
+        if (!(cin >> choice)) {
+            if (cin.eof()) {
+                return;
+            }
+            cin.clear();
+            string invalid_input;
+            getline(cin, invalid_input);
+            cout << "Invalid input. Enter a search menu number.\n";
+            continue;
+        }
+        if (choice == 0) {
+            // Return to the top-level menu without exiting the application.
+            return;
+        }
+
+        vector<GameNode*> results;
+		bool show_details = false; // Whether only names are printed vs full details of each game.
+        string text;
+        int id;
+        int support_choice;
+        float min_price;
+        float max_price;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter the exact game name (case-sensitive): ";
+            // Removes whitespace
+            cin >> ws;
+            getline(cin, text);
+            results = driver.searchByName(text);
+            show_details = true;
+            break;
+        case 2:
+            cout << "Enter the game ID: ";
+            cin >> id;
+            results = driver.searchById(id);
+            show_details = true;
+            break;
+        case 3:
+            cout << "Find games that support Windows? (1 = yes, 0 = no): ";
+            cin >> support_choice;
+            results = driver.searchByWindowsSupport(support_choice == 1);
+            break;
+        case 4:
+            cout << "Find games that support Mac? (1 = yes, 0 = no): ";
+            cin >> support_choice;
+            results = driver.searchByMacSupport(support_choice == 1);
+            break;
+        case 5:
+            cout << "Find games that support Linux? (1 = yes, 0 = no): ";
+            cin >> support_choice;
+            results = driver.searchByLinuxSupport(support_choice == 1);
+            break;
+        case 6:
+            cout << "Enter minimum price: $";
+            cin >> min_price;
+            cout << "Enter maximum price: $";
+            cin >> max_price;
+            results = driver.searchByPrice(min_price, max_price);
+            break;
+        case 7:
+            cout << "Enter the exact supported language (case-sensitive): ";
+            cin >> ws;
+            getline(cin, text);
+            results = driver.searchByLanguageSupport(text);
+            break;
+        default:
+            // Ignore unsupported menu numbers and redisplay the search choices.
+            cout << "Invalid search option.\n";
+            continue;
+        }
+
+        printResults(results, show_details);
+    }
+}
+}
 
 int main() {
-    // The heap is created within the driver class.
+    // Driver is created, and values are extracted from the CSV file.
     Driver driver;
-
+    cout << "Extracting Values..." << endl;
     if (!driver.loadCsv("Data/games.csv")) {
+        // Do not offer searches against an empty, unloaded dataset.
         cout << "Could not open CSV file." << endl;
         return 1;
     }
 
-    cout << "Loaded: " << driver.getLoadedRecords() << endl;
-    cout << "Skipped: " << driver.getSkippedRecords() << endl;
+    cout << "Values extracted successfully." << endl;
 
-    // ID 1030300 is "1030300 - Hollow Knight: Silksong = $15.99"
-    vector<GameNode*> results = driver.searchById(1030300);
 
-    for (GameNode* game : results) {
-        cout << game->getGameID() << " - " << game->getGameName() << " - $" << game->getPrice() << '\n';
+    // Initial menu starts to run
+    while (true) {
+        cout << "\n================================\n"
+            << "Video Game Search Engine\n"
+            << "1. Search games\n"
+            << "2. Sort games\n"
+            << "3. Show load statistics\n"
+            << "0. Exit\n"
+            << "================================\n";
+
+        int choice;
+        cout << "Choose an option: ";
+        if (!(cin >> choice)) {
+            if (cin.eof()) {
+                break;
+            }
+            cin.clear();
+            string invalid_input;
+            getline(cin, invalid_input);
+            cout << "Invalid input. Enter a menu number.\n";
+            continue;
+        }
+
+        switch (choice) {
+        case 1:
+            searchMenu(driver);
+            break;
+        case 2:
+            cout << "Sort options are not implemented yet.\n";
+            break;
+        case 3:
+            cout << "Loaded: " << driver.getLoadedRecords() << '\n'
+                 << "Skipped: " << driver.getSkippedRecords() << '\n';
+            break;
+        case 0:
+            cout << "Exiting.\n";
+            return 0;
+        default:
+            // Keep unexpected selections from runnning.
+            cout << "Invalid option. Choose one of the listed numbers.\n";
+            break;
+        }
     }
 
     return 0;

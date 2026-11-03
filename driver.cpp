@@ -1,5 +1,7 @@
 #include "driver.h"
+#include <chrono>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
 
 using namespace std;
@@ -100,7 +102,7 @@ bool Driver::loadCsv(const string& filename) {
 				parseBoolean(fields[17]),
 				parseBoolean(fields[18]),
 				parseBoolean(fields[19]),
-				parseLanguages(fields[9]));
+				parseLanguages(fields[10]));
 			++loaded_records;
 		} catch (const invalid_argument&) {
 			++skipped_records;
@@ -117,29 +119,78 @@ int Driver::getLoadedRecords() const { return loaded_records; }
 int Driver::getSkippedRecords() const { return skipped_records; }
 
 vector<GameNode*> Driver::searchByName(const string& name) {
-	return game_heap.searchByName(name);
+	Heap matches = game_heap.searchByName(name);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchById(int id) {
-	return game_heap.searchByID(id);
+	Heap matches = game_heap.searchByID(id);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchByWindowsSupport(bool windows_support) {
-	return game_heap.searchByWindowsSupport(windows_support);
+	Heap matches = game_heap.searchByWindowsSupport(windows_support);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchByMacSupport(bool mac_support) {
-	return game_heap.searchByMacSupport(mac_support);
+	Heap matches = game_heap.searchByMacSupport(mac_support);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchByLinuxSupport(bool linux_support) {
-	return game_heap.searchByLinuxSupport(linux_support);
+	Heap matches = game_heap.searchByLinuxSupport(linux_support);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchByPrice(float min_price, float max_price) {
-	return game_heap.searchByPrice(min_price, max_price);
+	Heap matches = game_heap.searchByPrice(min_price, max_price);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }
 
 vector<GameNode*> Driver::searchByLanguageSupport(const string& language) {
-	return game_heap.searchByLanguageSupport(language);
+	Heap matches = game_heap.searchByLanguageSupport(language);
+	auto sort_start = chrono::steady_clock::now();
+	vector<GameNode*> results = game_heap.sortHeap(matches);
+	auto sort_end = chrono::steady_clock::now();
+	cout << "Sort time: "
+		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+		 << " microseconds\n";
+	return results;
 }

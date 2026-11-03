@@ -154,7 +154,7 @@ Heap Heap::searchByLanguageSupport(string language) {
     return unordered_result;
 }
 
-vector<GameNode*> Heap::sortHeap(Heap unordered_result) {
+vector<GameNode*> Heap::sortHeap(Heap& unordered_result) {
     vector<GameNode*> result;
     int result_size =unordered_result.size;
     //Sorts the result using heap sort
