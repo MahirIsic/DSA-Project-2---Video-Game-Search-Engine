@@ -3,6 +3,7 @@
 #include "gameNode.h"
 using namespace std;
 
+// Implementation for sorting by different criteria exists, but only the name sort is used in the project.
 template <typename function>
 void merge(vector<GameNode>& games, int left, int mid, int right, function compare)
 {

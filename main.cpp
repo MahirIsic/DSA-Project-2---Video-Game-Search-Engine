@@ -1,8 +1,11 @@
 #include <iostream>
+#include <chrono>
 #include <iomanip>
 #include <string>
 #include <vector>
 #include "driver.h"
+#include "Heap.h"
+#include "mergeSort.h"
 
 using namespace std;
 
@@ -183,8 +186,50 @@ int main() {
             searchMenu(driver);
             break;
         case 2:
-            cout << "Sort options are not implemented yet.\n";
+        {
+            vector<GameNode>& filtered_games = driver.getFilteredGames();
+            if (filtered_games.empty()) {
+                cout << "No filtered games to sort. Search or filter games first.\n";
+                break;
+            }
+
+            cout << "1. Merge Sort\n2. Heap Sort\nChoose a sorting algorithm: ";
+            int sort_choice;
+            if (!(cin >> sort_choice) || (sort_choice != 1 && sort_choice != 2)) {
+                if (!cin.eof()) {
+                    cin.clear();
+                    string invalid_input;
+                    getline(cin, invalid_input);
+                }
+                cout << "Invalid sorting choice.\n";
+                break;
+            }
+
+            vector<GameNode> sorted_games = filtered_games;
+
+            auto sort_start = chrono::steady_clock::now();
+            if (sort_choice == 1) {
+                mergeSort(sorted_games, 0, static_cast<int>(sorted_games.size()) - 1, compareNames);
+            }
+            else {
+				Heap filtered_heap;
+                sorted_games = filtered_heap.sortHeap(sorted_games);
+            }
+            auto sort_end = chrono::steady_clock::now();
+
+            cout << (sort_choice == 1 ? "Merge Sort" : "Heap Sort")
+                 << " by name completed for " << sorted_games.size() << " games in "
+                 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+                 << " microseconds.\nSorted names: ";
+            for (size_t i = 0; i < sorted_games.size(); ++i) {
+                if (i > 0) {
+                    cout << ", ";
+                }
+                cout << sorted_games[i].getGameName();
+            }
+            cout << '\n';
             break;
+        }
         case 3:
             cout << "Loaded: " << driver.getLoadedRecords() << '\n'
                  << "Skipped: " << driver.getSkippedRecords() << '\n';
