@@ -1,13 +1,16 @@
 #include <iostream>
+#include <chrono>
 #include <iomanip>
 #include <string>
 #include <vector>
 #include "driver.h"
+#include "Heap.h"
+#include "mergeSort.h"
 
 using namespace std;
 
 namespace {
-void printResults(const vector<GameNode*>& results, bool show_details) {
+void printResults(vector<GameNode>& results, bool show_details) {
     if (results.empty()) {
         // Handle no matches before attempting to display game records.
         cout << "No games matched your search.\n";
@@ -20,23 +23,24 @@ void printResults(const vector<GameNode*>& results, bool show_details) {
             if (i > 0) {
                 cout << ", ";
             }
-            cout << results[i]->getGameName();
+            cout << results[i].getGameName();
         }
         cout << '\n';
         return;
     }
 
-    for (GameNode* game : results) {
-        cout << "ID: " << game->getGameID()
-             << " | Name: " << game->getGameName()
-             << " | Price: $" << fixed << setprecision(2) << game->getPrice() << defaultfloat
-             << " | Windows: " << (game->getWindowsSupport() ? "Yes" : "No")
-             << " | Mac: " << (game->getMacSupport() ? "Yes" : "No")
-             << " | Linux: " << (game->getLinuxSupport() ? "Yes" : "No")
+	// Detailed representation if show_details is true.
+    for (GameNode& game : results) {
+        cout << "ID: " << game.getGameID()
+             << " | Name: " << game.getGameName()
+             << " | Price: $" << fixed << setprecision(2) << game.getPrice() << defaultfloat
+             << " | Windows: " << (game.getWindowsSupport() ? "Yes" : "No")
+             << " | Mac: " << (game.getMacSupport() ? "Yes" : "No")
+             << " | Linux: " << (game.getLinuxSupport() ? "Yes" : "No")
              << " | Languages: ";
 
         bool first_language = true;
-        for (const string& language : game->getSupportedLanguages()) {
+        for (const string& language : game.getSupportedLanguages()) {
             if (!first_language) {
                 cout << ", ";
             }
@@ -74,11 +78,11 @@ void searchMenu(Driver& driver) {
             continue;
         }
         if (choice == 0) {
-            // Return to the top-level menu without exiting the application.
+            // Return to the top-level menu without exiting the whole application.
             return;
         }
 
-        vector<GameNode*> results;
+        vector<GameNode>* results = nullptr;
 		bool show_details = false; // Whether only names are printed vs full details of each game.
         string text;
         int id;
@@ -92,42 +96,42 @@ void searchMenu(Driver& driver) {
             // Removes whitespace
             cin >> ws;
             getline(cin, text);
-            results = driver.searchByName(text);
+            results = &driver.searchByName(text);
             show_details = true;
             break;
         case 2:
             cout << "Enter the game ID: ";
             cin >> id;
-            results = driver.searchById(id);
+            results = &driver.searchById(id);
             show_details = true;
             break;
         case 3:
             cout << "Find games that support Windows? (1 = yes, 0 = no): ";
             cin >> support_choice;
-            results = driver.searchByWindowsSupport(support_choice == 1);
+            results = &driver.searchByWindowsSupport(support_choice == 1);
             break;
         case 4:
             cout << "Find games that support Mac? (1 = yes, 0 = no): ";
             cin >> support_choice;
-            results = driver.searchByMacSupport(support_choice == 1);
+            results = &driver.searchByMacSupport(support_choice == 1);
             break;
         case 5:
             cout << "Find games that support Linux? (1 = yes, 0 = no): ";
             cin >> support_choice;
-            results = driver.searchByLinuxSupport(support_choice == 1);
+            results = &driver.searchByLinuxSupport(support_choice == 1);
             break;
         case 6:
             cout << "Enter minimum price: $";
             cin >> min_price;
             cout << "Enter maximum price: $";
             cin >> max_price;
-            results = driver.searchByPrice(min_price, max_price);
+            results = &driver.searchByPrice(min_price, max_price);
             break;
         case 7:
             cout << "Enter the exact supported language (case-sensitive): ";
             cin >> ws;
             getline(cin, text);
-            results = driver.searchByLanguageSupport(text);
+            results = &driver.searchByLanguageSupport(text);
             break;
         default:
             // Ignore unsupported menu numbers and redisplay the search choices.
@@ -135,7 +139,7 @@ void searchMenu(Driver& driver) {
             continue;
         }
 
-        printResults(results, show_details);
+        printResults(*results, show_details);
     }
 }
 }
@@ -157,9 +161,10 @@ int main() {
     while (true) {
         cout << "\n================================\n"
             << "Video Game Search Engine\n"
-            << "1. Search games\n"
-            << "2. Sort games\n"
+            << "1. Search / Filter games\n"
+            << "2. Sort filtered games\n"
             << "3. Show load statistics\n"
+            << "4. Display filtered game names\n"
             << "0. Exit\n"
             << "================================\n";
 
@@ -181,12 +186,74 @@ int main() {
             searchMenu(driver);
             break;
         case 2:
-            cout << "Sort options are not implemented yet.\n";
+        {
+            vector<GameNode>& filtered_games = driver.getFilteredGames();
+            if (filtered_games.empty()) {
+                cout << "No filtered games to sort. Search or filter games first.\n";
+                break;
+            }
+
+            cout << "1. Merge Sort\n2. Heap Sort\nChoose a sorting algorithm: ";
+            int sort_choice;
+            if (!(cin >> sort_choice) || (sort_choice != 1 && sort_choice != 2)) {
+                if (!cin.eof()) {
+                    cin.clear();
+                    string invalid_input;
+                    getline(cin, invalid_input);
+                }
+                cout << "Invalid sorting choice.\n";
+                break;
+            }
+
+            vector<GameNode> sorted_games = filtered_games;
+
+            auto sort_start = chrono::steady_clock::now();
+            if (sort_choice == 1) {
+                mergeSort(sorted_games, 0, static_cast<int>(sorted_games.size()) - 1, compareNames);
+            }
+            else {
+				Heap filtered_heap;
+                sorted_games = filtered_heap.sortHeap(sorted_games);
+            }
+            auto sort_end = chrono::steady_clock::now();
+
+            cout << "Sorted Names: ";
+            for (size_t i = 0; i < sorted_games.size(); ++i) {
+                if (i > 0) {
+                    cout << ", ";
+                }
+                cout << sorted_games[i].getGameName();
+            }
+            cout << '\n';
+            cout << (sort_choice == 1 ? "Merge Sort" : "Heap Sort")
+                << " by name completed for " << sorted_games.size() << " games in "
+                << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+                << " microseconds.";
+            cout << '\n';
             break;
+        }
         case 3:
             cout << "Loaded: " << driver.getLoadedRecords() << '\n'
                  << "Skipped: " << driver.getSkippedRecords() << '\n';
             break;
+        case 4: {
+            const vector<GameNode>& filtered_games = driver.getFilteredGames();
+            if (filtered_games.empty()) {
+                // Avoid showing an empty list when no filter has produced matches.
+                cout << "No filtered games are available. Search or filter first.\n";
+                break;
+            }
+
+            cout << "Filtered game names (" << filtered_games.size() << "): ";
+            for (size_t i = 0; i < filtered_games.size(); ++i) {
+                if (i > 0) {
+                    cout << ", ";
+                }
+                cout << filtered_games[i].getGameName();
+            }
+            cout << '\n';
+            break;
+        }
         case 0:
             cout << "Exiting.\n";
             return 0;

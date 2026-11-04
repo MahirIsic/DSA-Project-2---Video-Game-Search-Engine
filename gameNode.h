@@ -27,4 +27,6 @@ public:
     bool getMacSupport();
     bool getLinuxSupport();
     unordered_set<string> getSupportedLanguages();
+    string getGameName() const;
+
 };

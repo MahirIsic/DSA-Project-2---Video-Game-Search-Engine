@@ -1,11 +1,9 @@
 #pragma once
 #include <vector>
-#include <string>
 #include "gameNode.h"
 using namespace std;
 
-//templated functions to reduce clutter by passing in a compare function which decides if
-//the vector should be sorted by game names, id or price
+// Implementation for sorting by different criteria exists, but only the name sort is used in the project.
 template <typename function>
 void merge(vector<GameNode>& games, int left, int mid, int right, function compare)
 {
@@ -63,13 +61,6 @@ void mergeSort(vector<GameNode>& games, int start, int end, function compare)
     }
 }
 
-vector<GameNode> searchByName(vector<GameNode>& games, string name);
-GameNode searchByID(vector<GameNode>& games, int id);
-vector<GameNode> searchByWindowsSupport(vector<GameNode>& games);
-vector<GameNode> searchByMacSupport(vector<GameNode>& games);
-vector<GameNode> searchByLinuxSupport(vector<GameNode>& games);
-vector<GameNode> searchByPrice(vector<GameNode>& games, float min_price, float max_price);
-vector<GameNode> searchByLanguageSupport(vector<GameNode>& games, string language);
 bool compareNames(GameNode& first, GameNode& other);
 bool compareIDs(GameNode& first, GameNode& other);
 bool comparePrice(GameNode& first, GameNode& other);
