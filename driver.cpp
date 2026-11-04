@@ -1,7 +1,5 @@
 #include "driver.h"
-#include <chrono>
 #include <fstream>
-#include <iostream>
 #include <stdexcept>
 
 using namespace std;
@@ -11,7 +9,7 @@ using namespace std;
 Driver::Driver() : loaded_records(0), skipped_records(0) {}
 
 // Scans the row character by character, splitting on unquoted commas and treating doubled quotes as escaped quotes.
-vector<string> Driver::parseCsvLine(const string& line) {
+vector<string> Driver::parseCsvLine(string line) {
 	vector<string> fields;
 	string field;
 	bool inside_quotes = false;
@@ -22,13 +20,16 @@ vector<string> Driver::parseCsvLine(const string& line) {
 			if (inside_quotes && i + 1 < line.size() && line[i + 1] == '"') {
 				field += '"';
 				++i;
-			} else {
+			} 
+			else {
 				inside_quotes = !inside_quotes;
 			}
-		} else if (c == ',' && !inside_quotes) {
+		} 
+		else if (c == ',' && !inside_quotes) {
 			fields.push_back(field);
 			field.clear();
-		} else {
+		} 
+		else {
 			field += c;
 		}
 	}
@@ -38,7 +39,7 @@ vector<string> Driver::parseCsvLine(const string& line) {
 }
 
 // Parses a bracketed, comma-separated language value into a set of languages.
-unordered_set<string> Driver::parseLanguages(const string& value) {
+unordered_set<string> Driver::parseLanguages(string value) {
 	unordered_set<string> languages;
 	string language;
 
@@ -62,13 +63,13 @@ unordered_set<string> Driver::parseLanguages(const string& value) {
 	return languages;
 }
 
-// Converts the supported textual and numeric true values into a boolean.
-bool Driver::parseBoolean(const string& value) {
+// Converts contextual values into a boolean.
+bool Driver::parseBoolean(string value) {
 	return value == "True" || value == "true" || value == "1";
 }
 
-// Loads game records from a CSV file onto the heap and tracks how many rows load or are skipped.
-bool Driver::loadCsv(const string& filename) {
+// Main function that loads game records into the all_games vector from a CSV file.
+bool Driver::loadCsv(string filename) {
 	ifstream input(filename);
 	if (!input.is_open()) {
 		return false;
@@ -76,13 +77,15 @@ bool Driver::loadCsv(const string& filename) {
 
 	loaded_records = 0;
 	skipped_records = 0;
+	all_games.clear();
+	filtered_games.clear();
 
 	string line;
 	if (!getline(input, line)) {
 		return true;
 	}
 
-	// Read each line of the CSV file, parse it, and insert it into the heap.
+	// Read each line of the CSV file, parse it, and insert it into the vector.
 	while (getline(input, line)) {
 		if (line.empty()) {
 			continue;
@@ -95,102 +98,101 @@ bool Driver::loadCsv(const string& filename) {
 		}
 
 		try {
-			game_heap.insert(
-				stoi(fields[0]),
-				fields[1],
-				stof(fields[6]),
-				parseBoolean(fields[17]),
-				parseBoolean(fields[18]),
-				parseBoolean(fields[19]),
-				parseLanguages(fields[10]));
+			int id = stoi(fields[0]);
+			string name = fields[1];
+			float price = stof(fields[6]);
+			bool windows_support = parseBoolean(fields[17]);
+			bool mac_support = parseBoolean(fields[18]);
+			bool linux_support = parseBoolean(fields[19]);
+			unordered_set<string> supported_languages = parseLanguages(fields[10]);
+
+			all_games.emplace_back(id, name, price, windows_support, mac_support, linux_support, supported_languages);
 			++loaded_records;
-		} catch (const invalid_argument&) {
+		}
+		catch (invalid_argument&) {
 			++skipped_records;
-		} catch (const out_of_range&) {
+		}
+		catch (out_of_range&) {
 			++skipped_records;
 		}
 	}
-
 	return true;
 }
 
-int Driver::getLoadedRecords() const { return loaded_records; }
+int Driver::getLoadedRecords() { return loaded_records; }
 
-int Driver::getSkippedRecords() const { return skipped_records; }
+int Driver::getSkippedRecords() { return skipped_records; }
 
-vector<GameNode*> Driver::searchByName(const string& name) {
-	Heap matches = game_heap.searchByName(name);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByName(string name) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getGameName() == name) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchById(int id) {
-	Heap matches = game_heap.searchByID(id);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchById(int id) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getGameID() == id) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchByWindowsSupport(bool windows_support) {
-	Heap matches = game_heap.searchByWindowsSupport(windows_support);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByWindowsSupport(bool windows_support) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getWindowsSupport() == windows_support) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchByMacSupport(bool mac_support) {
-	Heap matches = game_heap.searchByMacSupport(mac_support);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByMacSupport(bool mac_support) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getMacSupport() == mac_support) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchByLinuxSupport(bool linux_support) {
-	Heap matches = game_heap.searchByLinuxSupport(linux_support);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByLinuxSupport(bool linux_support) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getLinuxSupport() == linux_support) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchByPrice(float min_price, float max_price) {
-	Heap matches = game_heap.searchByPrice(min_price, max_price);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByPrice(float min_price, float max_price) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getPrice() >= min_price && game.getPrice() <= max_price) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
 }
 
-vector<GameNode*> Driver::searchByLanguageSupport(const string& language) {
-	Heap matches = game_heap.searchByLanguageSupport(language);
-	auto sort_start = chrono::steady_clock::now();
-	vector<GameNode*> results = game_heap.sortHeap(matches);
-	auto sort_end = chrono::steady_clock::now();
-	cout << "Sort time: "
-		 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-		 << " microseconds\n";
-	return results;
+vector<GameNode>& Driver::searchByLanguageSupport(string language) {
+	filtered_games.clear();
+	for (GameNode& game : all_games) {
+		if (game.getSupportedLanguages().count(language) != 0) {
+			filtered_games.push_back(game);
+		}
+	}
+	return filtered_games;
+}
+
+vector<GameNode>& Driver::getFilteredGames() {
+	return filtered_games;
 }

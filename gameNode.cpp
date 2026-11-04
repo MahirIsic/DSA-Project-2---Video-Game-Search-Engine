@@ -21,7 +21,7 @@ int GameNode::getGameID() {
     return game_id;
 }
 
-string GameNode::getGameName() {
+string GameNode::getGameName() const {
     return game_name;
 }
 

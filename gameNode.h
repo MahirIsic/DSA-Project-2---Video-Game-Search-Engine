@@ -26,10 +26,6 @@ public:
     bool getMacSupport();
     bool getLinuxSupport();
     unordered_set<string> getSupportedLanguages();
-    string getGameName();
-    // bool operator <(GameNode other);
-    // bool operator >(GameNode other);
-    // bool operator <=(GameNode other);
-    // bool operator >=(GameNode other);
+    string getGameName() const;
 
 };

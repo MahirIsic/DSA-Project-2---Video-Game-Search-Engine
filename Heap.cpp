@@ -77,86 +77,9 @@ GameNode* Heap::extractMin() {
     return max;
 }
 
-Heap Heap::searchByName(string name) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the name into a new heap
-    for (auto i:heap) {
-        if (i->getGameName() == name) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByID(int id) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the id into a new heap
-    for (auto i:heap) {
-        if (i->getGameID() == id) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByWindowsSupport(bool windows_support) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the input windows support into a new heap
-    for (auto i:heap) {
-        if (i->getWindowsSupport() == windows_support) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByLinuxSupport(bool linux_support) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the input linux support into a new heap
-    for (auto i:heap) {
-        if (i->getLinuxSupport() == linux_support) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByMacSupport(bool mac_support) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the input Mac support into a new heap
-    for (auto i:heap) {
-        if (i->getMacSupport() == mac_support) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByPrice(float min_price, float max_price) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that has the input Mac support into a new heap
-    for (auto i:heap) {
-        if (i->getPrice() >= min_price && i->getPrice() <= max_price) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
-Heap Heap::searchByLanguageSupport(string language) {
-    Heap unordered_result;
-    //Iterates through the heap and inserts every value that contains the input supported language into a new heap
-    for (auto i:heap) {
-        if (i->getSupportedLanguages().count(language) != 0) {
-            unordered_result.insert(i->getGameID(),i->getGameName(),i->getPrice(),i->getWindowsSupport(),i->getMacSupport(),i->getLinuxSupport(),i->getSupportedLanguages());
-        }
-    }
-    return unordered_result;
-}
-
 vector<GameNode*> Heap::sortHeap(Heap& unordered_result) {
     vector<GameNode*> result;
-    int result_size =unordered_result.size;
+    int result_size = unordered_result.size;
     //Sorts the result using heap sort
     for (int i=0;i<result_size;i++) {
         result.push_back(unordered_result.extractMin());
