@@ -217,16 +217,18 @@ int main() {
             }
             auto sort_end = chrono::steady_clock::now();
 
-            cout << (sort_choice == 1 ? "Merge Sort" : "Heap Sort")
-                 << " by name completed for " << sorted_games.size() << " games in "
-                 << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
-                 << " microseconds.\nSorted names: ";
+            cout << "Sorted Names: ";
             for (size_t i = 0; i < sorted_games.size(); ++i) {
                 if (i > 0) {
                     cout << ", ";
                 }
                 cout << sorted_games[i].getGameName();
             }
+            cout << '\n';
+            cout << (sort_choice == 1 ? "Merge Sort" : "Heap Sort")
+                << " by name completed for " << sorted_games.size() << " games in "
+                << chrono::duration_cast<chrono::microseconds>(sort_end - sort_start).count()
+                << " microseconds.";
             cout << '\n';
             break;
         }
