@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "driver.h"
-#include "Heap.h"
+#include "heap.h"
 #include "mergeSort.h"
 
 using namespace std;
