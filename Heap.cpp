@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "Heap.h"
+#include "heap.h"
 #include "gameNode.h"
 using namespace std;
 
