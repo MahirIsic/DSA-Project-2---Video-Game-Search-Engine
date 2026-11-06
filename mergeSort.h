@@ -5,14 +5,14 @@ using namespace std;
 
 // Implementation for sorting by different criteria exists, but only the name sort is used in the project.
 template <typename function>
-void merge(vector<GameNode>& games, int left, int mid, int right, function compare)
+void merge(vector<GameNode*>& games, int left, int mid, int right, function compare)
 {
     int leftSize = mid - left + 1;
     int rightSize = right - mid;
 
     //add elements of left and right halfs to new vectors
-    vector<GameNode> leftList(leftSize);
-    vector<GameNode> rightList(rightSize);
+    vector<GameNode*> leftList(leftSize);
+    vector<GameNode*> rightList(rightSize);
     for(int i = 0; i < leftSize;i++)
     {
         leftList[i] = games[left + i];
@@ -29,7 +29,7 @@ void merge(vector<GameNode>& games, int left, int mid, int right, function compa
     while(leftPtr < leftSize && rightPtr < rightSize)
     {  
         //readd the elements into the original vector
-        if(compare(leftList[leftPtr], rightList[rightPtr]))
+        if(compare(*(leftList[leftPtr]), *(rightList[rightPtr])))
             games[mergedPtr++] = leftList[leftPtr++];
         else
             games[mergedPtr++] = rightList[rightPtr++];
@@ -47,7 +47,7 @@ void merge(vector<GameNode>& games, int left, int mid, int right, function compa
 }
 
 template <typename function>
-void mergeSort(vector<GameNode>& games, int start, int end, function compare)
+void mergeSort(vector<GameNode*>& games, int start, int end, function compare)
 {
     //perform recursive call to divide vector into two until there is only one element left in the vector
     if(start < end)
